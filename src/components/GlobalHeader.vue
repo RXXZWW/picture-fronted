@@ -1,64 +1,88 @@
 <template>
-  <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" />
+  <div id="globalHeader">
+    <a-row :wrap="false">
+      <a-col flex="200px">
+        <router-link to="/">
+          <div class="title-bar">
+            <img class="logo" src="/image.jpg" alt="logo" />
+            <div class="title">鱼皮云图库</div>
+          </div>
+        </router-link>
+      </a-col>
+      <a-col flex="auto">
+        <a-menu
+          v-model:selectedKeys="current"
+          mode="horizontal"
+          @click="onMenuClick"
+          :items="items"
+        />
+      </a-col>
+      <a-col flex="120px">
+        <div class="user-login-status">
+          <div v-if="loginUserStore.loginUser.id">
+            {{ loginUserStore.loginUser.userName ?? '无名' }}
+          </div>
+          <div v-else>
+            <a-button type="primary" href="/user/login">登录</a-button>
+          </div>
+        </div>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 <script lang="ts" setup>
 import { h, ref } from 'vue'
-import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { MenuProps } from 'ant-design-vue'
-const current = ref<string[]>(['mail'])
+import { useRouter } from 'vue-router'
+import { HomeOutlined } from '@ant-design/icons-vue'
+import { useLoginUserStore } from '@/stores/useLoginUserStore'
+
+const loginUserStore = useLoginUserStore()
+
 const items = ref<MenuProps['items']>([
   {
-    key: 'mail',
-    icon: () => h(MailOutlined),
-    label: 'Navigation One',
-    title: 'Navigation One',
+    key: '/',
+    icon: () => h(HomeOutlined),
+    label: '主页',
+    title: '主页',
   },
   {
-    key: 'app',
-    icon: () => h(AppstoreOutlined),
-    label: 'Navigation Two',
-    title: 'Navigation Two',
+    key: '/about',
+    label: '关于',
+    title: '关于',
   },
   {
-    key: 'sub1',
-    icon: () => h(SettingOutlined),
-    label: 'Navigation Three - Submenu',
-    title: 'Navigation Three - Submenu',
-    children: [
-      {
-        type: 'group',
-        label: 'Item 1',
-        children: [
-          {
-            label: 'Option 1',
-            key: 'setting:1',
-          },
-          {
-            label: 'Option 2',
-            key: 'setting:2',
-          },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Item 2',
-        children: [
-          {
-            label: 'Option 3',
-            key: 'setting:3',
-          },
-          {
-            label: 'Option 4',
-            key: 'setting:4',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    key: 'alipay',
-    label: h('a', { href: 'https://antdv.com', target: '_blank' }, 'Navigation Four - Link'),
-    title: 'Navigation Four - Link',
+    key: 'others',
+    label: h('a', { href: 'https://www.codefather.com', target: '_blank' }, '编程导航'),
+    title: '编程导航',
   },
 ])
+
+const router = useRouter()
+
+// 路由跳转事件
+const onMenuClick = ({ key }) => {
+  router.push({
+    path: key,
+  })
+}
+
+const current = ref<string[]>([''])
+router.afterEach((to) => {
+  current.value = [to.path]
+})
 </script>
+<style scoped>
+.title-bar {
+  display: flex;
+  align-items: center;
+}
+.title {
+  color: black;
+  font-size: 18px;
+  margin-left: 16px;
+}
+.logo {
+  width: 48px;
+}
+</style>
