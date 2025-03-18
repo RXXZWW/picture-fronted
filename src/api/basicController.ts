@@ -1,169 +1,25 @@
-// @ts-ignore
 /* eslint-disable */
 import request from '@/request'
 
-/** hello GET /api/hello */
-export async function helloUsingGet(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.helloUsingGETParams,
-  options?: { [key: string]: any }
-) {
-  return request<API.BaseResponseString_>('/api/hello', {
-    method: 'GET',
-    params: {
-      // name has a default value: unknown user
-      name: 'unknown user',
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** hello PUT /api/hello */
-export async function helloUsingPut(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.helloUsingPUTParams,
-  options?: { [key: string]: any }
-) {
-  return request<API.BaseResponseString_>('/api/hello', {
-    method: 'PUT',
-    params: {
-      // name has a default value: unknown user
-      name: 'unknown user',
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** hello POST /api/hello */
-export async function helloUsingPost(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.helloUsingPOSTParams,
-  options?: { [key: string]: any }
-) {
-  return request<API.BaseResponseString_>('/api/hello', {
+/** addUser POST /api/add */
+export async function addUserUsingPost(body: API.UserAddRequest, options?: { [key: string]: any }) {
+  return request<API.BaseResponseLong_>('/api/add', {
     method: 'POST',
-    params: {
-      // name has a default value: unknown user
-      name: 'unknown user',
-      ...params,
+    headers: {
+      'Content-Type': 'application/json',
     },
+    data: body,
     ...(options || {}),
   })
 }
 
-/** hello DELETE /api/hello */
-export async function helloUsingDelete(
+/** deleteUserById POST /api/delete */
+export async function deleteUserByIdUsingPost(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.helloUsingDELETEParams,
-  options?: { [key: string]: any }
+  params: API.deleteUserByIdUsingPOSTParams,
+  options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseString_>('/api/hello', {
-    method: 'DELETE',
-    params: {
-      // name has a default value: unknown user
-      name: 'unknown user',
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** hello PATCH /api/hello */
-export async function helloUsingPatch(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.helloUsingPATCHParams,
-  options?: { [key: string]: any }
-) {
-  return request<API.BaseResponseString_>('/api/hello', {
-    method: 'PATCH',
-    params: {
-      // name has a default value: unknown user
-      name: 'unknown user',
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** html GET /api/html */
-export async function htmlUsingGet(options?: { [key: string]: any }) {
-  return request<string>('/api/html', {
-    method: 'GET',
-    ...(options || {}),
-  })
-}
-
-/** html PUT /api/html */
-export async function htmlUsingPut(options?: { [key: string]: any }) {
-  return request<string>('/api/html', {
-    method: 'PUT',
-    ...(options || {}),
-  })
-}
-
-/** html POST /api/html */
-export async function htmlUsingPost(options?: { [key: string]: any }) {
-  return request<string>('/api/html', {
-    method: 'POST',
-    ...(options || {}),
-  })
-}
-
-/** html DELETE /api/html */
-export async function htmlUsingDelete(options?: { [key: string]: any }) {
-  return request<string>('/api/html', {
-    method: 'DELETE',
-    ...(options || {}),
-  })
-}
-
-/** html PATCH /api/html */
-export async function htmlUsingPatch(options?: { [key: string]: any }) {
-  return request<string>('/api/html', {
-    method: 'PATCH',
-    ...(options || {}),
-  })
-}
-
-/** saveUser GET /api/save_user */
-export async function saveUserUsingGet(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.saveUserUsingGETParams,
-  options?: { [key: string]: any }
-) {
-  return request<string>('/api/save_user', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** saveUser PUT /api/save_user */
-export async function saveUserUsingPut(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.saveUserUsingPUTParams,
-  options?: { [key: string]: any }
-) {
-  return request<string>('/api/save_user', {
-    method: 'PUT',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** saveUser POST /api/save_user */
-export async function saveUserUsingPost(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.saveUserUsingPOSTParams,
-  options?: { [key: string]: any }
-) {
-  return request<string>('/api/save_user', {
+  return request<API.BaseResponseBoolean_>('/api/delete', {
     method: 'POST',
     params: {
       ...params,
@@ -172,14 +28,14 @@ export async function saveUserUsingPost(
   })
 }
 
-/** saveUser DELETE /api/save_user */
-export async function saveUserUsingDelete(
+/** getUserById GET /api/get */
+export async function getUserByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.saveUserUsingDELETEParams,
-  options?: { [key: string]: any }
+  params: API.getUserByIdUsingGETParams,
+  options?: { [key: string]: any },
 ) {
-  return request<string>('/api/save_user', {
-    method: 'DELETE',
+  return request<API.BaseResponseUser_>('/api/get', {
+    method: 'GET',
     params: {
       ...params,
     },
@@ -187,57 +43,99 @@ export async function saveUserUsingDelete(
   })
 }
 
-/** saveUser PATCH /api/save_user */
-export async function saveUserUsingPatch(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.saveUserUsingPATCHParams,
-  options?: { [key: string]: any }
-) {
-  return request<string>('/api/save_user', {
-    method: 'PATCH',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  })
-}
-
-/** user GET /api/user */
-export async function userUsingGet(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser_>('/api/user', {
+/** getLoginUser GET /api/get/login */
+/**
+ * 获取登录用户信息
+ *
+ * @param options
+ * @returns
+ */
+export async function getCurrentUser(options?: { [key: string]: any }) {
+  return request<API.BaseResponseLoginUserVO_>('/api/get/login', {
     method: 'GET',
     ...(options || {}),
   })
 }
 
-/** user PUT /api/user */
-export async function userUsingPut(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser_>('/api/user', {
-    method: 'PUT',
+/** getUserVOById GET /api/get/vo */
+export async function getUserVoByIdUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getUserVOByIdUsingGETParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseUserVO_>('/api/get/vo', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
     ...(options || {}),
   })
 }
 
-/** user POST /api/user */
-export async function userUsingPost(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser_>('/api/user', {
+/** listUserVOByPage POST /api/list/page/vo */
+export async function listUserVoByPageUsingPost(
+  body: API.UserQueryRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsePageUserVO_>('/api/list/page/vo', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   })
 }
 
-/** user DELETE /api/user */
-export async function userUsingDelete(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser_>('/api/user', {
-    method: 'DELETE',
+/** userLogin POST /api/login */
+export async function userLoginUsingPost(
+  body: API.UserLoginRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseLoginUserVO_>('/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   })
 }
 
-/** user PATCH /api/user */
-export async function userUsingPatch(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser_>('/api/user', {
-    method: 'PATCH',
+/** userLogout GET /api/logout */
+export async function userLogoutUsingGet(options?: { [key: string]: any }) {
+  return request<API.BaseResponseBoolean_>('/api/logout', {
+    method: 'GET',
+    ...(options || {}),
+  })
+}
+
+/** userRegister POST /api/register */
+export async function userRegisterUsingPost(
+  body: API.UserRegisterRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseLong_>('/api/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** updateUser POST /api/update */
+export async function updateUserUsingPost(
+  body: API.UserUpdateRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseBoolean_>('/api/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   })
 }

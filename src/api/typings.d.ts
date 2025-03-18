@@ -1,7 +1,26 @@
 declare namespace API {
-  type BaseResponseString_ = {
+  type BaseResponseBoolean_ = {
+    description: string
     code?: number
-    data?: string
+    data?: boolean
+    message?: string
+  }
+
+  type BaseResponseLoginUserVO_ = {
+    code?: number
+    data?: LoginUserVO
+    message?: string
+  }
+
+  type BaseResponseLong_ = {
+    code?: number
+    data?: number
+    message?: string
+  }
+
+  type BaseResponsePageUserVO_ = {
+    code?: number
+    data?: PageUserVO_
     message?: string
   }
 
@@ -9,6 +28,17 @@ declare namespace API {
     code?: number
     data?: User
     message?: string
+  }
+
+  type BaseResponseUserVO_ = {
+    code?: number
+    data?: UserVO
+    message?: string
+  }
+
+  type deleteUserByIdUsingPOSTParams = {
+    /** id */
+    id?: number
   }
 
   type getLoginUsingGETParams = {
@@ -23,58 +53,100 @@ declare namespace API {
     regexp1: string
   }
 
-  type helloUsingDELETEParams = {
-    /** name */
-    name?: string
+  type getUserByIdUsingGETParams = {
+    /** id */
+    id?: number
   }
 
-  type helloUsingGETParams = {
-    /** name */
-    name?: string
+  type getUserVOByIdUsingGETParams = {
+    /** id */
+    id?: number
   }
 
-  type helloUsingPATCHParams = {
-    /** name */
-    name?: string
+  type LoginUserVO = {
+    createTime?: string
+    id?: number
+    updateTime?: string
+    userAccount?: string
+    userAvatar?: string
+    userName?: string
+    userProfile?: string
+    userRole?: string
   }
 
-  type helloUsingPOSTParams = {
-    /** name */
-    name?: string
-  }
-
-  type helloUsingPUTParams = {
-    /** name */
-    name?: string
-  }
-
-  type saveUserUsingDELETEParams = {
-    age?: number
-    name?: string
-  }
-
-  type saveUserUsingGETParams = {
-    age?: number
-    name?: string
-  }
-
-  type saveUserUsingPATCHParams = {
-    age?: number
-    name?: string
-  }
-
-  type saveUserUsingPOSTParams = {
-    age?: number
-    name?: string
-  }
-
-  type saveUserUsingPUTParams = {
-    age?: number
-    name?: string
+  type PageUserVO_ = {
+    current?: number
+    pages?: number
+    records?: UserVO[]
+    size?: number
+    total?: number
   }
 
   type User = {
-    age?: number
-    name?: string
+    createTime?: string
+    editTime?: string
+    id?: number
+    inviteuser?: number
+    isDelete?: number
+    shareCode?: string
+    updateTime?: string
+    userAccount?: string
+    userAvatar?: string
+    userName?: string
+    userPassword?: string
+    userProfile?: string
+    userRole?: string
+    vipCode?: string
+    vipExpireTime?: string
+    vipNumber?: number
+  }
+
+  type UserAddRequest = {
+    userAccount?: string
+    userAvatar?: string
+    userName?: string
+    userProfile?: string
+    userRole?: string
+  }
+
+  type UserLoginRequest = {
+    userAccount?: string
+    userPassword?: string
+  }
+
+  type UserQueryRequest = {
+    current?: number
+    id?: number
+    pageSize?: number
+    sortField?: string
+    sortOrder?: string
+    userAccount?: string
+    userName?: string
+    userProfile?: string
+    userRole?: string
+  }
+
+  type UserRegisterRequest = {
+    checkPassword?: string
+    userAccount?: string
+    userPassword?: string
+  }
+
+  type UserUpdateRequest = {
+    id?: number
+    userAvatar?: string
+    userName?: string
+    userProfile?: string
+    userRole?: string
+  }
+
+  type UserVO = {
+    createTime?: string
+    id?: number
+    userAccount?: string
+    userAvatar?: string
+    userName?: string
+    userProfile?: string
+    userRole?: string
   }
 }
