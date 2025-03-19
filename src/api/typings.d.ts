@@ -1,6 +1,5 @@
 declare namespace API {
   type BaseResponseBoolean_ = {
-    description: string
     code?: number
     data?: boolean
     message?: string

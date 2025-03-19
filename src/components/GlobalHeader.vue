@@ -59,7 +59,7 @@ const doLogout = async () => {
     message.success('退出登录成功')
     await router.push('/user/login')
   } else {
-    message.error('退出登录失败' + res.data.description)
+    message.error('退出登录失败' + res.data.message)
   }
 }
 
@@ -73,9 +73,9 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
-    key: '/about',
-    label: '关于',
-    title: '关于',
+    key: '/admin/manage',
+    label: '用户管理',
+    title: '用户管理',
   },
   {
     key: 'others',
