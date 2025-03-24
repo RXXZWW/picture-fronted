@@ -45,7 +45,11 @@ export async function getUserByIdUsingGet(
 }
 
 /** getLoginUser GET /api/user/get/login */
+<<<<<<< HEAD
 export async function getCurrentUser(options?: { [key: string]: any }) {
+=======
+export async function getLoginUserUsingGet(options?: { [key: string]: any }) {
+>>>>>>> 4f5aa4e (图片模块添加（未完成）)
   return request<API.BaseResponseLoginUserVO_>('/api/user/get/login', {
     method: 'GET',
     ...(options || {}),

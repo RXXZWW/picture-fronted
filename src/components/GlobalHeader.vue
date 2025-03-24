@@ -78,6 +78,11 @@ const items = ref<MenuProps['items']>([
     title: '用户管理',
   },
   {
+    key: '/admin/add_picture',
+    label: '创建图片',
+    title: '创建图片',
+  },
+  {
     key: 'others',
     label: h('a', { href: 'https://www.codefather.com', target: '_blank' }, '编程导航'),
     title: '编程导航',
@@ -87,7 +92,8 @@ const items = ref<MenuProps['items']>([
 const router = useRouter()
 
 // 路由跳转事件
-const onMenuClick = ({ key }) => {
+// 通过为 key 参数添加类型注解，明确其类型为 string，避免了隐式 any 类型的问题。
+const onMenuClick = ({ key }: { key: string }) => {
   router.push({
     path: key,
   })
