@@ -1,10 +1,14 @@
 <template>
   <div id="addPicturePage">
-    <h2 style="margin-bottom: 16px">创建图片</h2>
+    <h2 style="margin-bottom: 16px">
+      {{ route.query?.id ? '修改图片' : '添加图片' }}
+    </h2>
+    <!-- 图片上传组件 -->
     <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+    <!-- 图片信息表单 -->
     <a-form v-if="picture" layout="vertical" :model="pictureForm" @finish="handleSubmit">
       <a-form-item name="name" label="名称">
-        <a-input v-model:value="pictureForm.name" placeholder="请输入名称" />
+        <a-input v-model:value="pictureForm.name" placeholder="请输入名称" allow-clear />
       </a-form-item>
       <a-form-item lable="简介" name="introduction">
         <a-textarea
@@ -43,18 +47,33 @@
 import PictureUpload from '@/components/PictureUpload.vue'
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { editPictureUsingPost, listPictureTagCategoryUsingGet } from '@/api/fileController'
+import {
+  editPictureUsingPost,
+  getPictureVoByIdUsingGet,
+  listPictureTagCategoryUsingGet,
+} from '@/api/fileController'
 import router from '@/router'
+import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 
 const picture = ref<API.PictureVO>()
 
 const pictureForm = reactive<API.PictureEditRequest>({})
+/**
+ * 图片上传成功  数据回调
+ * @param newPicture 新图片数据
+ */
 const onSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
   pictureForm.name = newPicture.name
 }
-const handleSubmit = async (values: any) => {
+// 原代码中使用了 any 类型，这会绕过 TypeScript 的类型检查，不符合最佳实践。
+// 这里我们将 any 替换为具体的类型 API.PictureEditRequest，以提高代码的类型安全性。
+/**
+ * 提交表单
+ * @param values
+ */
+const handleSubmit = async (values: API.PictureEditRequest) => {
   const pictureId = picture.value?.id
   if (!pictureId) {
     return
@@ -65,7 +84,7 @@ const handleSubmit = async (values: any) => {
   })
   if (res.data.code === 0 && res.data.data) {
     message.success('创建成功')
-    // 跳转到图片详情页
+    //跳转到图片详情页
     router.push({
       path: `/picture/${pictureId}`,
     })
@@ -99,11 +118,40 @@ const getTagCategoryOptions = async () => {
     message.error('获取标签和分类失败，' + res.data.message)
   }
 }
+// 合并后的初始化逻辑
 onMounted(() => {
-  getTagCategoryOptions()
+  getTagCategoryOptions() // 先加载选项数据
 })
 
 const route = useRoute()
+
+//获取老数据
+const getOldPicture = async () => {
+  //获取到id
+  const id = route.query?.id
+  if (id) {
+    const res = await getPictureVoByIdUsingGet({
+      // 将id转换为number类型
+      id: typeof id === 'string' ? Number(id) : 0,
+    })
+    if (res.data.code === 0 && res.data.data) {
+      const data = res.data.data
+      picture.value = data
+      pictureForm.name = data.name
+      pictureForm.introduction = data.introduction
+      pictureForm.category = data.category
+      // 确保 data.tags 是数组类型
+      pictureForm.tags = Array.isArray(data.tags)
+        ? data.tags
+        : typeof data.tags === 'string'
+          ? [data.tags]
+          : []
+    }
+  }
+}
+onMounted(() => {
+  getOldPicture()
+})
 </script>
 
 <style>

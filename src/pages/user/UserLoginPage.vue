@@ -37,7 +37,8 @@ const loginUserStore = useLoginUserStore()
  * 提交表单
  * @param values
  */
-const handleSubmit = async (values: any) => {
+// 根据上下文推测，values 应该是 API.UserLoginRequest 类型
+const handleSubmit = async (values: API.UserLoginRequest) => {
   const res = await userLoginUsingPost(values) // 登录成功，把登录态保存到全局状态中
   if (res.data.code === 0 && res.data.data) {
     await loginUserStore.fetchLoginUser()
@@ -58,7 +59,7 @@ const handleSubmit = async (values: any) => {
   color: #fff;
   margin-bottom: 16px;
 }
-.title{
+.title {
   text-align: center;
   margin-bottom: 16px;
 }

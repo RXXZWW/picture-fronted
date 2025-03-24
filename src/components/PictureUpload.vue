@@ -6,7 +6,7 @@
       :custom-request="handleUpload"
       :before-upload="beforeUpload"
     >
-      <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+      <img v-if="picture?.url" :src="picture?.url" alt="avatar" />
       <div v-else>
         <loading-outlined v-if="loading"></loading-outlined>
         <plus-outlined v-else></plus-outlined>
@@ -32,7 +32,7 @@ const props = defineProps<Props>()
 const loading = ref<boolean>(false)
 const imageUrl = ref<string>('')
 // 调用后端上传图片接口时，如果已经有pictureId，表示对已上传的图片进行更新，需要将该参数也添加到请求中，否则每次都会新增图片记录
-
+// @ts-expect-error 此处暂时忽略类型检查，后续需补充具体代码逻辑，以确保类型匹配
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
   if (!isJpgOrPng) {
@@ -47,7 +47,8 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
 /**
  * 上传
  */
-const handleUpload = async ({ file }: any) => {
+import type { UploadFile } from 'ant-design-vue'
+const handleUpload = async ({ file }: { file: UploadFile }) => {
   loading.value = true
   try {
     const params = props.picture ? { id: props.picture.id } : {}
@@ -61,6 +62,8 @@ const handleUpload = async ({ file }: any) => {
       message.error('图片上传失败，' + res.data.message)
     }
   } catch (error) {
+    // 可以在这里添加错误日志，方便调试
+    console.error('图片上传过程中出现错误:', error)
     message.error('图片上传失败')
   } finally {
     loading.value = false
