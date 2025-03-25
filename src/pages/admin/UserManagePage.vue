@@ -32,18 +32,14 @@
         {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
       <template v-else-if="column.key === 'action'">
-        <a-button type="primary" @click="handleEdit(record)" style="margin-right: 8px"
-          >编辑</a-button
-        >
-        <a-button type="primary" danger @click="handleDelete(record)">删除</a-button>
+        <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
       </template>
     </template>
   </a-table>
 </template>
 <script lang="ts" setup>
-import { SmileOutlined } from '@ant-design/icons-vue'
 import { ref } from 'vue'
-import { listUserVoByPageUsingPost } from '@/api/basicController'
+import { deleteUserByIdUsingPost, listUserVoByPageUsingPost } from '@/api/basicController'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive } from 'vue'
 import dayjs from 'dayjs'
@@ -120,17 +116,35 @@ const pagination = computed(() => {
     pageSize: searchParams.pageSize ?? 10,
     total: total.value,
     showSizeChanger: true,
-    showTotal: (total) => `共 ${total} 条`,
+    showTotal: (total: number) => `共 ${total} 条`,
   }
 })
-const doTableChange = () => {}
-
-const doSearch = () => {}
-
-const handleEdit = (record: API.UserVO) => {
-  console.log('编辑', record)
+//表格变化处理
+const doTableChange = (page: { current: number; pageSize: number }) => {
+  searchParams.current = page.current
+  searchParams.pageSize = page.pageSize
+  fetchData()
 }
-const handleDelete = (record: API.UserVO) => {}
+
+const doSearch = () => {
+  //重置分页
+  searchParams.current = 1
+  fetchData()
+}
+const handleDelete = async (id: string) => {
+  if (!id) {
+    return
+  }
+  // 将 id 转换为 number 类型
+  const res = await deleteUserByIdUsingPost({ id: Number(id) })
+  if (res.data.code === 0) {
+    message.success('删除成功')
+    //刷新数据
+    fetchData()
+  } else {
+    message.error('删除失败' + res.data.message)
+  }
+}
 </script>
 
 <style scoped></style>
