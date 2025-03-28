@@ -78,7 +78,7 @@ const items = ref<MenuProps['items']>([
     title: '用户管理',
   },
   {
-    key: '/admin/add_picture',
+    key: '/add_picture',
     label: '创建图片',
     title: '创建图片',
   },

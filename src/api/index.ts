@@ -1,12 +1,14 @@
-// 移除了未使用的 @ts-expect-error 指令
+// @ts-ignore
+
 // API 更新时间：
 // API 唯一标识：
-
-import * as fileController from './fileController'
 import * as pathVariableController from './pathVariableController'
+import * as pictureController from './PictureController'
+import * as fileController from './fileController'
 import * as basicController from './basicController'
 export default {
-  fileController,
   pathVariableController,
+  pictureController,
+  fileController,
   basicController,
 }

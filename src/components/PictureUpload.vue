@@ -20,7 +20,7 @@ import { ref } from 'vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { UploadProps } from 'ant-design-vue'
-import { uploadPictureUsingPost } from '@/api/fileController'
+import { uploadPictureUsingPost } from '@/api/PictureController'
 
 interface Props {
   picture?: API.PictureVO

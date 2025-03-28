@@ -4,7 +4,7 @@ import { message } from 'ant-design-vue'
 //创建Axios 实例
 // 如果不写这个 withCredentials 前端就不会携带cookie，会出现前端已经登录，但是后端不认的情况
 const myAxios = axios.create({
-  baseURL: '', //这里已经使用了代理，所以只需要请求自己，或者留空
+  baseURL: 'http://localhost:8123', //这里已经使用了代理，所以只需要请求自己，或者留空
   // baseURL: 'http://localhost:8123',
   withCredentials: true,
   timeout: 60000,

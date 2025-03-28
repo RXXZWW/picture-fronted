@@ -3,8 +3,17 @@
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '修改图片' : '添加图片' }}
     </h2>
+    <!-- 选择上传方式 -->
+    <a-tabs v-model:activeKey="uploadType">
+      <a-tab-pane key="file" tab="图片上传">
+        <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+      </a-tab-pane>
+      <a-tab-pane key="url" tab="URL上传" force-render>
+        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess" />
+      </a-tab-pane>
+    </a-tabs>
     <!-- 图片上传组件 -->
-    <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+
     <!-- 图片信息表单 -->
     <a-form v-if="picture" layout="vertical" :model="pictureForm" @finish="handleSubmit">
       <a-form-item name="name" label="名称">
@@ -45,18 +54,21 @@
 
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
+import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
   listPictureTagCategoryUsingGet,
-} from '@/api/fileController'
+} from '@/api/PictureController'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 
 const picture = ref<API.PictureVO>()
+
+const uploadType = ref<'file' | 'url'>('file')
 
 const pictureForm = reactive<API.PictureEditRequest>({})
 /**
@@ -141,11 +153,7 @@ const getOldPicture = async () => {
       pictureForm.introduction = data.introduction
       pictureForm.category = data.category
       // 确保 data.tags 是数组类型
-      pictureForm.tags = Array.isArray(data.tags)
-        ? data.tags
-        : typeof data.tags === 'string'
-          ? [data.tags]
-          : []
+      pictureForm.tags = JSON.parse(data.tags ?? '[]')
     }
   }
 }

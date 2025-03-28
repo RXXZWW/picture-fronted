@@ -19,6 +19,15 @@
         style="min-width: 180px"
       />
     </a-form-item>
+    <a-form-item label="审核状态" name="reviewStatus">
+      <a-select
+        v-model:value="searchParams.reviewStatus"
+        :options="PIC_REVIEW_STATUS_OPTIONS"
+        placeholder="请选择状态"
+        allow-clear
+        style="min-width: 180px"
+      />
+    </a-form-item>
     <a-form-item>
       <a-button type="primary" html-type="submit">搜索</a-button>
     </a-form-item>
@@ -56,22 +65,49 @@
       <template v-else-if="column.dataIndex === 'editTime'">
         {{ dayjs(record.editTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
+      <template v-if="column.dataIndex === 'reviewMessage'">
+        <div>审核状态: {{ PIC_REVIEW_STATUS_MAP[record.reviewStatus] }}</div>
+        <div>审核信息: {{ record.reviewMessage }}</div>
+        <div>审核时间: {{ dayjs(record.reviewTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+      </template>
       <template v-else-if="column.key === 'action'">
-        <a-button type="primary" href="/add_picture" target="_blank" style="margin-right: 8px"
-          >编辑</a-button
-        >
-        <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
+        <a-space wrap>
+          <a-button
+            v-if="record.reviewStatus !== PIC_REVIEW_STATUS_ENUM.PASS"
+            type="primary"
+            @click="handleReview(record, PIC_REVIEW_STATUS_ENUM.PASS)"
+            >通过</a-button
+          >
+          <a-button
+            v-if="record.reviewStatus !== PIC_REVIEW_STATUS_ENUM.REJECT"
+            type="primary"
+            danger
+            @click="handleReview(record, PIC_REVIEW_STATUS_ENUM.REJECT)"
+            >拒绝</a-button
+          >
+          <a-button type="primary" href="/add_picture" target="_blank">编辑</a-button>
+          <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
+        </a-space>
       </template>
     </template>
   </a-table>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { listPictureByPageUsingPost, deletePictureUsingPost } from '@/api/fileController'
+import {
+  listPictureByPageUsingPost,
+  deletePictureUsingPost,
+  doPictureReviewUsingPost,
+} from '@/api/PictureController'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive } from 'vue'
 import dayjs from 'dayjs'
 import { computed } from 'vue'
+import {
+  PIC_REVIEW_STATUS_MAP,
+  PIC_REVIEW_STATUS_ENUM,
+  PIC_REVIEW_STATUS_OPTIONS,
+} from '@/constants/picture.ts'
 
 const columns = [
   {
@@ -115,6 +151,10 @@ const columns = [
   {
     title: '编辑时间',
     dataIndex: 'editTime',
+  },
+  {
+    title: '审核信息',
+    dataIndex: 'reviewMessage',
   },
   {
     title: '操作',
@@ -183,6 +223,22 @@ const handleDelete = async (id: string) => {
     fetchData()
   } else {
     message.error('删除失败' + res.data.message)
+  }
+}
+
+const handleReview = async (record: API.PictureVO, reviewStatus: number) => {
+  const reviewMessage = reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS ? '审核通过' : '审核拒绝'
+  const res = await doPictureReviewUsingPost({
+    id: record.id,
+    reviewStatus,
+    reviewMessage,
+  })
+  if (res.data.code === 0) {
+    message.success('审核成功')
+    //重新获取列表
+    fetchData()
+  } else {
+    message.error('审核失败:' + res.data.message)
   }
 }
 </script>
