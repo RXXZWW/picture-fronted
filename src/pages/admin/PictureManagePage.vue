@@ -1,7 +1,12 @@
 <template>
   <a-flex justify="space-between" style="margin-bottom: 8px">
     <h2>图片管理</h2>
-    <a-button type="primary" href="/add_picture" target="_blank">添加图片</a-button>
+    <a-space>
+      <a-button type="primary" href="/add_picture" target="_blank">+ 创建图片</a-button>
+      <a-button type="primary" href="/add_picture/batch" target="_blank" ghost
+        >+ 批量创建图片</a-button
+      >
+    </a-space>
   </a-flex>
   <a-form layout="inline" :model="searchParams" @finish="doSearch" style="margin-bottom: 8px">
     <a-form-item label="关键词" name="searchText">
@@ -85,7 +90,9 @@
             @click="handleReview(record, PIC_REVIEW_STATUS_ENUM.REJECT)"
             >拒绝</a-button
           >
-          <a-button type="primary" href="/add_picture" target="_blank">编辑</a-button>
+          <a-button type="primary" :href="`/add_picture?id=${record.id}`" target="_blank"
+            >编辑</a-button
+          >
           <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
         </a-space>
       </template>

@@ -2,6 +2,21 @@
 /* eslint-disable */
 import request from '@/request'
 
+/** uploadPictureByBatch POST /api/picture */
+export async function uploadPictureByBatchUsingPost(
+  body: API.PictureUploadByBatchRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseInt_>('/api/picture', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** deletePicture POST /api/picture/delete */
 export async function deletePictureUsingPost(
   body: API.DeleteRequest,
@@ -83,6 +98,21 @@ export async function listPictureVoByPageUsingPost(
   options?: { [key: string]: any }
 ) {
   return request<API.BaseResponsePagePictureVO_>('/api/picture/list/page/vo', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** listPictureVOByPageWithCache POST /api/picture/list/page/vo/cache */
+export async function listPictureVoByPageWithCacheUsingPost(
+  body: API.PictureQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePagePictureVO_>('/api/picture/list/page/vo/cache', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
