@@ -4,9 +4,16 @@
       <a-layout-header class="header">
         <GlobalHeader />
       </a-layout-header>
-      <a-layout-content class="content">
-        <RouterView />
-      </a-layout-content>
+      <a-layout has-sider>
+        <!-- 新增 has-sider 属性 -->
+        <a-layout-sider class="sider">
+          <!-- 替换原有组件为 layout-sider -->
+          <GlobalSider />
+        </a-layout-sider>
+        <a-layout-content class="content">
+          <RouterView />
+        </a-layout-content>
+      </a-layout>
       <a-layout-footer class="footer">
         <a href="http://codefather.cn" target="_blank">编程导航 by RXXZWW</a>
       </a-layout-footer>
@@ -17,6 +24,7 @@
 <script setup lang="ts">
 import GlobalHeader from '@/components/GlobalHeader.vue'
 import { RouterView } from 'vue-router'
+import GlobalSider from '@/components/GlobalSider.vue'
 </script>
 
 <style scoped>
@@ -29,15 +37,19 @@ import { RouterView } from 'vue-router'
   right: 0;
   text-align: center;
 }
-#basicLayout .content {
-  padding: 20px;
-  background: linear-gradient(to right, #fefefe, #fff);
-  margin-bottom: 28px;
-}
 #basicLayout .header {
-  background: white;
-  color: unset;
-  padding-inline: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 1px;
+}
+#basicLayout .content {
+  padding: 28px;
+}
+#basicLayout .sider {
+  background: #fff;
+  padding-top: 20px;
+  border-right: 0.5px solid #eee;
+}
+#basicLayout :deep(.ant-menu-root) {
+  border-bottom: none !important;
+  border-inline-end: none !important;
 }
 </style>

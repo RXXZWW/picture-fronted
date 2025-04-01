@@ -10,9 +10,10 @@ export const PIC_REVIEW_STATUS_MAP = {
   2: '不通过',
 }
 
-export const PIC_REVIEW_STATUS_OPTIONS = Object.keys(PIC_REVIEW_STATUS_MAP).map((key) => {
-  return {
-    label: PIC_REVIEW_STATUS_MAP[key],
-    value: key,
-  }
-})
+// 修正 OPTIONS 的类型
+export const PIC_REVIEW_STATUS_OPTIONS = Object.entries(PIC_REVIEW_STATUS_MAP).map(
+  ([value, label]) => ({
+    label,
+    value: Number(value), // 转换为数字类型
+  }),
+)
