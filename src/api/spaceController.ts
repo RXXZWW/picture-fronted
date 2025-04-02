@@ -85,8 +85,8 @@ export async function listSpaceLevelUsingGet(options?: { [key: string]: any }) {
   })
 }
 
-/** querySpace POST /api/space/list/page */
-export async function querySpaceUsingPost(
+/** listSpaceByPage POST /api/space/list/page */
+export async function listSpaceByPageUsingPost(
   body: API.SpaceQueryRequest,
   options?: { [key: string]: any }
 ) {

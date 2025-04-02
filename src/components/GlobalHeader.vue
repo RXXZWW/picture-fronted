@@ -88,8 +88,13 @@ const items = ref<MenuProps['items']>([
     title: '图片管理',
   },
   {
+    key: '/space/manage',
+    label: '空间管理',
+    title: '空间管理'
+  }
+  {
     key: 'others',
-    label: h('a', { href: 'https://www.codefather.com', target: '_blank' }, '编程导航'),
+    label: h('a', { href: 'https://www.codefather.cn', target: '_blank' }, '编程导航'),
     title: '编程导航',
   },
 ])

@@ -366,7 +366,7 @@ declare namespace API {
     totalCount?: number
     totalSize?: number
     updateTime?: string
-    user?: User
+    user?: UserVO
     userId?: number
   }
 

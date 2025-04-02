@@ -190,7 +190,7 @@ const fetchData = async () => {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
   } else {
-    message.error('获取数据失败' + res.data.message)
+    message.error('获取数据失败:' + res.data.message)
   }
 }
 // 页面加载时请求一次
@@ -227,7 +227,7 @@ const handleDelete = async (id: string) => {
   if (res.data.code === 0) {
     message.success('删除成功')
     //刷新数据
-    fetchData()
+    await fetchData()
   } else {
     message.error('删除失败' + res.data.message)
   }
