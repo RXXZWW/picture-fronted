@@ -1,10 +1,16 @@
 <template>
   <a-form layout="inline" :model="searchParams" @finish="doSearch">
-    <a-form-item label="空间id">
-      <a-input v-model:value="searchParams.spaceId" placeholder="输入空间Id" />
-    </a-form-item>
     <a-form-item label="空间名称">
       <a-input v-model:value="searchParams.spaceName" placeholder="输入空间名称" />
+    </a-form-item>
+    <a-form-item label="空间级别">
+      <a-select
+        v-model:value="searchParams.spaceLevel"
+        :options="SPACE_LEVEL_OPTIONS"
+        placeholder="输入空间级别"
+        style="min-width: 180px"
+        allow-clear
+      />
     </a-form-item>
     <a-form-item label="用户id">
       <a-input v-model:value="searchParams.userId" placeholder="输入用户id" />
@@ -20,24 +26,25 @@
     @change="doTableChange"
   >
     <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'userAvatar'">
-        <a-image :src="record.userAvatar" :width="120" />
+      <!-- 空间级别 -->
+      <template v-if="column.dataIndex === 'spaceLevel'">
+        <a-tag>
+          {{ SPACE_LEVEL_MAP[record.spaceLevel as keyof typeof SPACE_LEVEL_MAP] }}
+        </a-tag>
       </template>
-      <template v-else-if="column.dataIndex === 'spaceLevel'">
-        <div v-if="record.spaceLevel === SPACE_LEVEL_ENUM.FLAGSHIP">
-          <a-tag color="green">旗舰版</a-tag>
-        </div>
-        <div v-else-if="record.spaceLevel === SPACE_LEVEL_ENUM.PROFESSIONAL">
-          <a-tag color="blue">专业版</a-tag>
-        </div>
-        <div v-else>
-          <a-tag color="red">普通版</a-tag>
-        </div>
+      <!-- 使用情况 -->
+      <template v-if="column.dataIndex === 'spaceUseInfo'">
+        <div>大小：{{ formatSize(record.totalSize) }} / {{ formatSize(record.maxSize) }}</div>
+        <div>数量：{{ record.totalCount }} / {{ record.maxCount }}</div>
       </template>
-      <template v-else-if="column.dataIndex === 'createTime'">
+      <template v-if="column.dataIndex === 'createTime'">
+        {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+      </template>
+      <template v-if="column.dataIndex === 'editTime'">
         {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
       <template v-else-if="column.key === 'action'">
+        <a-button type="primary" :href="`/add_space?id=${record.id}`">编辑</a-button>
         <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
       </template>
     </template>
@@ -45,13 +52,13 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { deleteUserByIdUsingPost } from '@/api/basicController'
-import { listSpaceByPageUsingPost } from '@/api/spaceController.ts'
+import { listSpaceByPageUsingPost, deleteSpaceUsingPost } from '@/api/SpaceController'
+import { formatSize } from '@/utils'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive } from 'vue'
 import dayjs from 'dayjs'
 import { computed } from 'vue'
-import { SPACE_LEVEL_ENUM } from '@/constants/space.ts'
+import { SPACE_LEVEL_OPTIONS, SPACE_LEVEL_MAP } from '@/constants/space.ts'
 
 const columns = [
   {
@@ -142,7 +149,7 @@ const handleDelete = async (id: string) => {
     return
   }
   // 将 id 转换为 number 类型
-  const res = await deleteUserByIdUsingPost({ id: Number(id) })
+  const res = await deleteSpaceUsingPost({ id: Number(id) })
   if (res.data.code === 0) {
     message.success('删除成功')
     //刷新数据

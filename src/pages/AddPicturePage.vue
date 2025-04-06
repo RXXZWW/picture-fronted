@@ -3,13 +3,16 @@
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '修改图片' : '添加图片' }}
     </h2>
+    <a-typography-text v-if="spaceId" type="secondary">
+      保存至空间: <a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-text>
     <!-- 选择上传方式 -->
     <a-tabs v-model:activeKey="uploadType">
       <a-tab-pane key="file" tab="图片上传">
-        <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <PictureUpload :picture="picture" :spaceId="Number(spaceId)" :onSuccess="onSuccess" />
       </a-tab-pane>
       <a-tab-pane key="url" tab="URL上传" force-render>
-        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <UrlPictureUpload :picture="picture" :spaceId="Number(spaceId)" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
     <!-- 图片上传组件 -->
@@ -46,7 +49,9 @@
         />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit" style="width: 100%">创建</a-button>
+        <a-button type="primary" html-type="submit" style="width: 100%">{{
+          route.query?.id ? '修改' : '创建'
+        }}</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -61,10 +66,14 @@ import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
   listPictureTagCategoryUsingGet,
-} from '@/api/PictureController'
+} from '@/api/pictureController'
 import router from '@/router'
 import { useRoute } from 'vue-router'
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
+
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
 
 const picture = ref<API.PictureVO>()
 
@@ -92,6 +101,7 @@ const handleSubmit = async (values: API.PictureEditRequest) => {
   }
   const res = await editPictureUsingPost({
     id: pictureId,
+    spaceId: spaceId.value,
     ...values,
   })
   if (res.data.code === 0 && res.data.data) {

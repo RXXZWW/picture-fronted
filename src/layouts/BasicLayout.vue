@@ -28,7 +28,7 @@ import GlobalSider from '@/components/GlobalSider.vue'
 </script>
 
 <style scoped>
-#basicLayout .footer {
+.footer {
   background: #efefef;
   padding: 16px;
   position: fixed;
@@ -37,18 +37,22 @@ import GlobalSider from '@/components/GlobalSider.vue'
   right: 0;
   text-align: center;
 }
-#basicLayout .header {
-  margin-bottom: 1px;
+.header {
+  /* margin-bottom: 1px; */
+  padding: 0 28px;
+  background: #fff;
+  border-bottom: 0.5px solid #eee;
 }
-#basicLayout .content {
+.content {
   padding: 28px;
+  margin-bottom: 20px;
 }
-#basicLayout .sider {
+.sider {
   background: #fff;
   padding-top: 20px;
   border-right: 0.5px solid #eee;
 }
-#basicLayout :deep(.ant-menu-root) {
+:deep(.ant-menu-root) {
   border-bottom: none !important;
   border-inline-end: none !important;
 }

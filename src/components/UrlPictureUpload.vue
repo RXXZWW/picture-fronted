@@ -15,10 +15,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { uploadPictureUrlUsingPost } from '@/api/PictureController'
+import { uploadPictureUrlUsingPost } from '@/api/pictureController'
 
 interface Props {
   picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 
@@ -33,13 +34,10 @@ const fileUrl = ref<string>('')
 const handleUpload = async () => {
   loading.value = true
   try {
-    const params: API.PictureUploadRequest = {
-      fileUrl: fileUrl.value,
-    }
     //检查父组件是否传来了图片信息，如果有就证明是更新图片的操作，所以将传来的图片id更新到参数中，方便后端获取信息
-    if (props.picture) {
-      params.id = props.picture.id
-    }
+    const params: API.PictureUploadRequest = { id: props.picture?.id, spaceId: props.spaceId }
+
+    params.spaceId = props.spaceId
     const res = await uploadPictureUrlUsingPost(params)
     if (res.data.code === 0 && res.data.data) {
       message.success('图片上传成功')

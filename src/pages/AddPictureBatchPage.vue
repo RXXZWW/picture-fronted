@@ -31,7 +31,7 @@
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import router from '@/router'
-import { uploadPictureByBatchUsingPost } from '@/api/PictureController'
+import { uploadPictureByBatchUsingPost } from '@/api/pictureController'
 
 const formData = reactive<API.PictureUploadByBatchRequest>({
   searchText: '',

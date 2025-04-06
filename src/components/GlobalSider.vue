@@ -1,5 +1,11 @@
 <template id="globalSider">
-  <a-layout-sider v-if="loginUserStore.loginUser.id" class="sider" width="200">
+  <a-layout-sider
+    v-if="loginUserStore.loginUser.id"
+    class="sider"
+    width="200"
+    collapsed-width="0"
+    breakpoint="lg"
+  >
     <a-menu mode="inline" v-model:selectedKeys="current" :items="menuItems" @click="doMenuClick" />
   </a-layout-sider>
 </template>

@@ -1,16 +1,16 @@
 <template>
   <div>
+    <h2 style="margin-bottom: 20px">创建空间</h2>
     <!-- 空间信息表单 -->
     <a-form layout="vertical" :model="spaceForm" @finish="handleSubmit">
       <a-form-item name="name" label="空间名称">
-        <a-input v-model:value="spaceForm" placeholder="请输入空间名称" allow-clear />
+        <a-input v-model:value="spaceForm.spaceName" placeholder="请输入空间名称" allow-clear />
       </a-form-item>
       <a-form-item label="空间级别" name="spaceLevel">
         <a-select
           v-model:value="spaceForm.spaceLevel"
-          :options="tagOptions"
-          mode="tags"
-          placeholder="请输入空间级别"
+          :options="SPACE_LEVEL_OPTIONS"
+          placeholder="请选择空间级别"
           style="min-width: 180px"
           allowClear
         />
@@ -24,9 +24,9 @@
     <a-card title="空间级别介绍">
       <a-typography-paragraph>
         * 目前仅支持开通普通版，如需升级空间，请联系
-        <a href="https://codefather.cn" target="_blank"> 修罗殿下啦啦啦 </a>
+        <a href="https://codefather.cn" target="_blank">管理员</a>
       </a-typography-paragraph>
-      <a-typography-paragraph v-for="spaceLevel in spaceLevelList">
+      <a-typography-paragraph v-for="spaceLevel in spaceLevelList" :key="spaceLevel.text">
         {{ spaceLevel.text }}: 大小 {{ formatSize(spaceLevel.maxSize) }}, 数量
         {{ spaceLevel.maxCount }}
       </a-typography-paragraph>
@@ -39,12 +39,13 @@ import {
   addSpaceUsingPost,
   listSpaceLevelUsingGet,
   updateSpaceUsingPost,
-} from '@/api/SpaceController'
+  getSpaceVoByIdUsingGet,
+} from '@/api/spaceController'
 import { reactive, ref, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import router from '@/router'
-import { SPACE_LEVEL_ENUM } from '@/constants/space.ts'
-import { getSpaceVoByIdUsingGet } from '@/api/SpaceController'
+import { SPACE_LEVEL_ENUM, SPACE_LEVEL_OPTIONS } from '@/constants/space'
+import { formatSize } from '@/utils'
 import { useRoute } from 'vue-router'
 
 const spaceForm = reactive<API.SpaceAddRequest | API.SpaceUpdateRequest>({
@@ -52,21 +53,23 @@ const spaceForm = reactive<API.SpaceAddRequest | API.SpaceUpdateRequest>({
   spaceLevel: SPACE_LEVEL_ENUM.COMMON,
 })
 const loading = ref(false)
+const oldSpace = ref<API.Space>()
+const spaceLevelList = ref<API.SpaceLevel[]>([])
 
-// 原代码中使用了 any 类型，这会绕过 TypeScript 的类型检查，不符合最佳实践。
-// 这里我们将 any 替换为具体的类型 API.PictureEditRequest，以提高代码的类型安全性。
+const route = useRoute()
+const spaceId = route.query.id as string
+
 /**
  * 提交表单
- * @param values
  */
-const handleSubmit = async (values: API.PictureEditRequest) => {
-  const spaceId = oldSpace.value?.id
+const handleSubmit = async () => {
+  const id = oldSpace.value?.id
   loading.value = true
   let res
   //更新
-  if (spaceId) {
+  if (id) {
     res = await updateSpaceUsingPost({
-      id: spaceId,
+      id,
       ...spaceForm,
     })
   } else {
@@ -77,16 +80,13 @@ const handleSubmit = async (values: API.PictureEditRequest) => {
   }
   if (res.data.code === 0 && res.data.data) {
     message.success('创建成功')
-    const path = `/space/${spaceId ?? res.data.data}`
+    const path = `/space/${id ?? res.data.data}`
     router.push({ path })
   } else {
     message.error('创建失败:' + res.data.message)
   }
   loading.value = false
 }
-const tagOptions = ref<string[]>([])
-
-const spaceLevelList = ref<API.SpaceLevel[]>([])
 
 // 获取空间级别
 const fetchSpaceLevelList = async () => {
@@ -98,18 +98,11 @@ const fetchSpaceLevelList = async () => {
   }
 }
 
-onMounted(() => {
-  fetchSpaceLevelList()
-})
-
-const route = useRoute()
-const oldSpace = ref<API.Space>()
-
 // 获取老数据
 const getOldSpace = async () => {
-  //获取数据
+  if (!spaceId) return
   const res = await getSpaceVoByIdUsingGet({
-    id: id,
+    id: Number(spaceId),
   })
   if (res.data.code === 0 && res.data.data) {
     const data = res.data.data
@@ -118,13 +111,13 @@ const getOldSpace = async () => {
     spaceForm.spaceLevel = data.spaceLevel
   }
 }
-// 页面加载时，请求老数据
+
 onMounted(() => {
+  fetchSpaceLevelList()
   getOldSpace()
 })
 </script>
 
-const route = useR
 <style>
 #addPicturePage {
   max-width: 720px;

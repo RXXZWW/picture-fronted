@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ShareModal ref="shareModalRef" :link="shareLink" />
     <a-row :gutter="[16, 16]">
       <!-- 图片展示区 -->
       <a-col :sm="24" :md="16" :xl="18">
@@ -36,12 +37,31 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    backgroundColor: toHexColor(picture.picColor),
+                    width: '16px',
+                    height: '16px',
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
           <a-space wrap>
             <a-button type="primary" @click="doDownload">
               免费下载
               <template #icon>
                 <DownloadOutlined />
+              </template>
+            </a-button>
+            <a-button type="primary" @click="doShare(picture)">
+              分享
+              <template #icon>
+                <ShareAltOutlined />
               </template>
             </a-button>
             <a-button v-if="canEdit" type="primary" @click="doEdit">
@@ -66,12 +86,42 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { message } from 'ant-design-vue'
-import { getPictureVoByIdUsingGet, deletePictureUsingPost } from '@/api/PictureController'
+import { getPictureVoByIdUsingGet, deletePictureUsingPost } from '@/api/pictureController'
 import { formatSize } from '@/utils/index.ts'
 import { downloadImage } from '@/utils/index.ts'
-import { EditOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons-vue'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  ShareAltOutlined,
+} from '@ant-design/icons-vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { useRouter } from 'vue-router'
+import ShareModal from '@/components/ShareModal.vue'
+
+//分享弹窗引用
+const shareModalRef = ref()
+//分享链接
+const shareLink = ref<string>()
+
+//分享
+const doShare = (picture: API.PictureVO) => {
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture?.id}`
+  if (shareModalRef.value) {
+    shareModalRef.value.showModal()
+  }
+}
+
+const toHexColor = (input) => {
+  //去掉 0x 前缀
+  const colorValue = input.startsWith('0x') ? input.slice(2) : input
+
+  // 将剩余部分解析为十六进制数,再转成6位十六进制字符串
+  const hexColor = parseInt(colorValue, 16).toString(16).padStart(6, '0')
+
+  //返回标准 #RRGGBB 格式
+  return `#${hexColor}`
+}
 
 const props = defineProps<{
   id: string | number
@@ -113,7 +163,13 @@ const canEdit = computed(() => {
 const router = useRouter()
 //编辑
 const doEdit = () => {
-  router.push('/add_picture?id=' + picture.value.id)
+  router.push({
+    path: '/add_picture',
+    query: {
+      id: picture.value.id,
+      spaceId: picture.value.spaceId,
+    },
+  })
 }
 //删除
 const doDelete = async () => {
@@ -134,4 +190,4 @@ const doDownload = () => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

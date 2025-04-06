@@ -20,10 +20,11 @@ import { ref } from 'vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { UploadProps } from 'ant-design-vue'
-import { uploadPictureUsingPost } from '@/api/PictureController'
+import { uploadPictureUsingPost } from '@/api/pictureController'
 
 interface Props {
   picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 
@@ -47,11 +48,14 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
 /**
  * 上传
  */
-import type { UploadFile } from 'ant-design-vue'
-const handleUpload = async ({ file }: { file: UploadFile }) => {
+const handleUpload = async (options: any) => {
+  const { file } = options
   loading.value = true
   try {
-    const params = props.picture ? { id: props.picture.id } : {}
+    const params: API.PictureUploadRequest = {
+      id: props.picture?.id,
+      spaceId: props.spaceId,
+    }
     const res = await uploadPictureUsingPost(params, {}, file)
     if (res.data.code === 0 && res.data.data) {
       message.success('图片上传成功')
