@@ -8,6 +8,7 @@
     </a-typography-text>
     <!-- 选择上传方式 -->
     <a-tabs v-model:activeKey="uploadType">
+      <!-- 图片上传组件 -->
       <a-tab-pane key="file" tab="图片上传">
         <PictureUpload :picture="picture" :spaceId="Number(spaceId)" :onSuccess="onSuccess" />
       </a-tab-pane>
@@ -15,7 +16,16 @@
         <UrlPictureUpload :picture="picture" :spaceId="Number(spaceId)" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
-    <!-- 图片上传组件 -->
+    <div v-if="picture" class="edit-bar">
+      <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+      <ImageCropper
+        ref="imageCropperRef"
+        image-url="picture?.url"
+        :picture="picture"
+        :spaceId="spaceId"
+        :onSuccess="onCropSuccess"
+      />
+    </div>
 
     <!-- 图片信息表单 -->
     <a-form v-if="picture" layout="vertical" :model="pictureForm" @finish="handleSubmit">
@@ -49,9 +59,9 @@
         />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit" style="width: 100%">{{
-          route.query?.id ? '修改' : '创建'
-        }}</a-button>
+        <a-button type="primary" html-type="submit" style="width: 100%"
+          >{{ route.query?.id ? '修改' : '创建' }}
+        </a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -70,6 +80,23 @@ import {
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { onMounted, computed } from 'vue'
+import { EditOutlined } from '@ant-design/icons-vue'
+import ImageCropper from '@/components/ImageCropper.vue'
+
+//图片编辑弹窗引用
+const imageCropperRef = ref()
+
+//编辑图片
+const doEditPicture = () => {
+  if (imageCropperRef.value) {
+    imageCropperRef.value.openModal()
+  }
+}
+
+//编辑成功时间
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
 
 const spaceId = computed(() => {
   return route.query?.spaceId
