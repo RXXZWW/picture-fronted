@@ -10,23 +10,39 @@
     <a-tabs v-model:activeKey="uploadType">
       <!-- 图片上传组件 -->
       <a-tab-pane key="file" tab="图片上传">
-        <PictureUpload :picture="picture" :spaceId="Number(spaceId)" :onSuccess="onSuccess" />
+        <PictureUpload
+          :picture="picture"
+          :spaceId="spaceId ? Number(spaceId) : undefined"
+          :onSuccess="onSuccess"
+        />
       </a-tab-pane>
       <a-tab-pane key="url" tab="URL上传" force-render>
-        <UrlPictureUpload :picture="picture" :spaceId="Number(spaceId)" :onSuccess="onSuccess" />
+        <UrlPictureUpload
+          :picture="picture"
+          :spaceId="spaceId ? Number(spaceId) : undefined"
+          :onSuccess="onSuccess"
+        />
       </a-tab-pane>
     </a-tabs>
     <div v-if="picture" class="edit-bar">
       <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+      <a-button type="primary" ghost :icon="h(FullscreenOutlined)" @click="doImagePainting">
+        AI 扩图
+      </a-button>
       <ImageCropper
         ref="imageCropperRef"
-        image-url="picture?.url"
+        :image-url="picture?.url"
         :picture="picture"
-        :spaceId="spaceId"
+        :spaceId="spaceId ? Number(spaceId) : null"
         :onSuccess="onCropSuccess"
       />
     </div>
-
+    <ImageOutPainting
+      ref="imageOutPaintingRef"
+      :picture="picture"
+      :spaceId="spaceId ? Number(spaceId) : null"
+      :onSuccess="onImageOutPaintingSuccess"
+    />
     <!-- 图片信息表单 -->
     <a-form v-if="picture" layout="vertical" :model="pictureForm" @finish="handleSubmit">
       <a-form-item name="name" label="名称">
@@ -70,7 +86,7 @@
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
-import { reactive, ref } from 'vue'
+import { reactive, ref, h } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
@@ -80,8 +96,24 @@ import {
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { onMounted, computed } from 'vue'
-import { EditOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import ImageCropper from '@/components/ImageCropper.vue'
+import ImageOutPainting from '@/components/ImageOutPainting.vue'
+
+// AI 扩图弹窗引用
+const imageOutPaintingRef = ref()
+
+// AI 扩图
+const doImagePainting = () => {
+  if (imageOutPaintingRef.value) {
+    imageOutPaintingRef.value.openModal()
+  }
+}
+
+// 编辑成功事件
+const onImageOutPaintingSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
 
 //图片编辑弹窗引用
 const imageCropperRef = ref()
@@ -126,11 +158,14 @@ const handleSubmit = async (values: API.PictureEditRequest) => {
   if (!pictureId) {
     return
   }
-  const res = await editPictureUsingPost({
+  const params: API.PictureEditRequest = {
     id: pictureId,
-    spaceId: spaceId.value,
     ...values,
-  })
+  }
+  if (spaceId.value) {
+    params.spaceId = Number(spaceId.value)
+  }
+  const res = await editPictureUsingPost(params)
   if (res.data.code === 0 && res.data.data) {
     message.success('创建成功')
     //跳转到图片详情页

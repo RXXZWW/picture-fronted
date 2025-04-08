@@ -48,7 +48,7 @@ import { h, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import type { MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-import { HomeOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { userLogoutUsingGet } from '@/api/basicController.ts'
 

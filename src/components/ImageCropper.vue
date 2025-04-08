@@ -1,14 +1,24 @@
 <template>
-  <a-modal class="image-cropper" v-model='visible' title="编辑图片" :footer="false" @cancel="closeModal">
-    <vueCropper
+  <a-modal
+    class="image-cropper"
+    v-model:open="visible"
+    title="编辑图片"
+    :footer="false"
+    @cancel="closeModal"
+    width="800px"
+  >
+    <VueCropper
       ref="cropperRef"
-      :img="imageUrl"
+      :img="props.picture?.url"
       :auto-crop="true"
       :fixed-box="false"
       :center-box="true"
       :can-move-box="true"
       :info="true"
-      :outputType="png"
+      :outputType="'png'"
+      :crossOrigin="true"
+      :img-crossorigin="'anonymous'"
+      style="height: 500px; width: 100%"
     />
     <div style="margin-bottom: 16px" />
     <!--    图片操作-->
@@ -22,13 +32,14 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-
-import { ref } from 'vue'
+import { ref, defineProps, defineExpose } from 'vue'
 import { uploadPictureUsingPost } from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
+import 'vue-cropper/dist/index.css'
+import { VueCropper } from 'vue-cropper'
 
 interface Props {
-  imageUrl?: string,
+  imageUrl?: string
   picture?: API.PictureVO
   spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
@@ -39,10 +50,10 @@ const loading = ref<boolean>(false)
 //确认裁剪
 const handleConfirm = () => {
   cropperRef.value.getCropBlob((blob: Blob) => {
-    const fileName=(props.picture?.name || 'image') + '.png'
-    const file = new File([blob],fileName,{type:blob.type})
+    const fileName = (props.picture?.name || 'image') + '.png'
+    const file = new File([blob], fileName, { type: blob.type })
     //上传图片
-    handleUpload({file})
+    handleUpload({ file })
   })
 }
 
@@ -50,24 +61,24 @@ const handleConfirm = () => {
  * 上传
  * @param file
  */
-const handleUpload = async ({file}) => {
+const handleUpload = async ({ file }) => {
   loading.value = true
-  try{
-    const params:API.PictureUploadRequest = props.picture? {id:props.picture.id}:{}
+  try {
+    const params: API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
     params.spaceId = props.spaceId
-    const res = await uploadPictureUsingPost(params,{},file)
-    if(res.data.code === 0 && res.data.data) {
-      message.success("图片上传成功")
+    const res = await uploadPictureUsingPost(params, {}, file)
+    if (res.data.code === 0 && res.data.data) {
+      message.success('图片上传成功')
       //将上传成功的图片信息传递给父组件
       props.onSuccess?.(res.data.data)
       closeModal()
-    }else{
-      message.error("图片上传失败" + res.data.message)
+    } else {
+      message.error('图片上传失败' + res.data.message)
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error){
-    message.error("图片上传失败")
-  }finally {
+  } catch (error) {
+    message.error('图片上传失败')
+  } finally {
     loading.value = false
   }
 }
@@ -105,7 +116,24 @@ const rotateRight = () => {
 const changeScale = (val: number) => {
   cropperRef.value.changeScale(val)
 }
-
 </script>
 
-<style scoped></style>
+<style scoped>
+.image-cropper {
+  :deep(.ant-modal-body) {
+    padding: 24px;
+  }
+  
+  :deep(.vue-cropper) {
+    height: 500px;
+    width: 100%;
+  }
+
+  .image-cropper-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+}
+</style>
