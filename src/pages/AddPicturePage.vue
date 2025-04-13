@@ -33,14 +33,14 @@
         ref="imageCropperRef"
         :image-url="picture?.url"
         :picture="picture"
-        :spaceId="spaceId ? Number(spaceId) : null"
+        :spaceId="spaceId ? Number(spaceId) : undefined"
         :onSuccess="onCropSuccess"
       />
     </div>
     <ImageOutPainting
       ref="imageOutPaintingRef"
       :picture="picture"
-      :spaceId="spaceId ? Number(spaceId) : null"
+      :spaceId="spaceId ? Number(spaceId) : undefined"
       :onSuccess="onImageOutPaintingSuccess"
     />
     <!-- 图片信息表单 -->

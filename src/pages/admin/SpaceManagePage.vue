@@ -1,4 +1,13 @@
 <template>
+  <a-space>
+    <a-button type="primary" href="/add_space" target="_blank">+ 创建空间</a-button>
+    <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank">
+      分析公共图库
+    </a-button>
+    <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank">
+      分析全空间
+    </a-button>
+  </a-space>
   <a-form layout="inline" :model="searchParams" @finish="doSearch">
     <a-form-item label="空间名称">
       <a-input v-model:value="searchParams.spaceName" placeholder="输入空间名称" />
@@ -44,15 +53,20 @@
         {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
       <template v-else-if="column.key === 'action'">
-        <a-button type="primary" :href="`/add_space?id=${record.id}`">编辑</a-button>
-        <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
+        <a-space>
+          <a-button type="primary" :href="`/space_analyze?spaceId=${record.id}`" target="_blank">
+            分析
+          </a-button>
+          <a-button type="primary" :href="`/add_space?id=${record.id}`">编辑</a-button>
+          <a-button type="primary" danger @click="handleDelete(record.id)">删除</a-button>
+        </a-space>
       </template>
     </template>
   </a-table>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { listSpaceByPageUsingPost, deleteSpaceUsingPost } from '@/api/SpaceController'
+import { listSpaceByPageUsingPost, deleteSpaceUsingPost } from '@/api/spaceController'
 import { formatSize } from '@/utils'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive } from 'vue'
